@@ -1,6 +1,6 @@
 #include "ofxAudioUnit.h"
 #include "ofxAudioUnitUtils.h"
-#include "ofUtils.h"
+//#include "ofUtils.h"
 #include "ofTypes.h"
 #include <iostream>
 
@@ -251,7 +251,10 @@ CFURLRef CreateURLFromPath(const std::string &path)
 CFURLRef CreateAbsURLForFileInDataFolder(const std::string &presetName)
 // ----------------------------------------------------------
 {
-	return CreateURLFromPath(ofFilePath::getAbsolutePath(ofToDataPath(presetName)));
+    assert(!"CreateAbsURLForFileInDataFolder");
+//	return CreateURLFromPath(ofFilePath::getAbsolutePath(ofToDataPath(presetName)));
+    CFURLRef URL;
+    return URL;
 }
 
 // ----------------------------------------------------------
@@ -323,41 +326,43 @@ bool ofxAudioUnit::loadPreset(const CFURLRef &presetURL)
 bool ofxAudioUnit::savePreset(const CFURLRef &presetURL)
 // ----------------------------------------------------------
 {
-	// getting preset data from AU
-	CFPropertyListRef preset;
-	UInt32 presetSize = sizeof(preset);
-	
-	OFXAU_RET_FALSE(AudioUnitGetProperty(*_unit,
-										 kAudioUnitProperty_ClassInfo,
-										 kAudioUnitScope_Global,
-										 0,
-										 &preset,
-										 &presetSize),
-					"getting preset data");
-	
-	if(!CFPropertyListIsValid(preset, kCFPropertyListXMLFormat_v1_0)) return false;
-	
-	// if succesful, writing it to a file
-	CFDataRef presetData = CFPropertyListCreateXMLData(kCFAllocatorDefault, preset);
-	
-	ofDirectory dataDir = ofDirectory(ofToDataPath(""));
-	if(!dataDir.exists()) dataDir.create();
-	
-	SInt32 errorCode;
-	Boolean writeSuccess = CFURLWriteDataAndPropertiesToResource(presetURL, 
-																 presetData,
-																 NULL,
-																 &errorCode);
-	
-	CFRelease(presetData);
-	
-	if(!writeSuccess)
-	{
-		cout << "Error " << errorCode << " writing preset file at " 
-		<< StringForPathFromURL(presetURL) << endl;
-	}
-	
-	return writeSuccess;
+    assert(!"CreateAbsURLForFileInDataFolder");
+    return false;
+//	// getting preset data from AU
+//	CFPropertyListRef preset;
+//	UInt32 presetSize = sizeof(preset);
+//
+//	OFXAU_RET_FALSE(AudioUnitGetProperty(*_unit,
+//										 kAudioUnitProperty_ClassInfo,
+//										 kAudioUnitScope_Global,
+//										 0,
+//										 &preset,
+//										 &presetSize),
+//					"getting preset data");
+//
+//	if(!CFPropertyListIsValid(preset, kCFPropertyListXMLFormat_v1_0)) return false;
+//
+//	// if succesful, writing it to a file
+//	CFDataRef presetData = CFPropertyListCreateXMLData(kCFAllocatorDefault, preset);
+//
+//	ofDirectory dataDir = ofDirectory(ofToDataPath(""));
+//	if(!dataDir.exists()) dataDir.create();
+//
+//	SInt32 errorCode;
+//	Boolean writeSuccess = CFURLWriteDataAndPropertiesToResource(presetURL,
+//																 presetData,
+//																 NULL,
+//																 &errorCode);
+//
+//	CFRelease(presetData);
+//
+//	if(!writeSuccess)
+//	{
+//		cout << "Error " << errorCode << " writing preset file at "
+//		<< StringForPathFromURL(presetURL) << endl;
+//	}
+//
+//	return writeSuccess;
 }
 
 // ----------------------------------------------------------
