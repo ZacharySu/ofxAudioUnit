@@ -9,6 +9,7 @@
 #include "ofxAudioUnitMixer.h"
 #include "ofxAudioUnitOutput.h"
 #include "ofxAudioUnitSampler.h"
+#include "lpAudioUnitSamplesOutput.hpp"
 
 #include "TargetConditionals.h"
 #if !TARGET_OS_IPHONE

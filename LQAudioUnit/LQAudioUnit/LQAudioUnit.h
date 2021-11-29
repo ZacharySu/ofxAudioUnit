@@ -15,4 +15,4 @@ FOUNDATION_EXPORT const unsigned char LQAudioUnitVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <LQAudioUnit/PublicHeader.h>
 
-
+#import "LPAudioUnitFilter.h"

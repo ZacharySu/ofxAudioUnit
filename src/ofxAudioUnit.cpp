@@ -421,3 +421,38 @@ void ofxAudioUnit::setRenderCallback(AURenderCallbackStruct callback, int bus)
 									 sizeof(callback)),
 				"setting render callback");
 }
+
+// ----------------------------------------------------------
+void ofxAudioUnit::printAudioUnitASBD(AudioUnit unit) {
+    AudioStreamBasicDescription ASBD = {0};
+    
+    if(unit){
+        UInt32 dataSize = sizeof(ASBD);
+        OSStatus s = AudioUnitGetProperty(unit,
+                                          kAudioUnitProperty_StreamFormat,
+                                          kAudioUnitScope_Output,
+                                          0,
+                                          &ASBD,
+                                          &dataSize);
+        if(s != noErr) {
+            ASBD = (AudioStreamBasicDescription){0};
+        }
+    }
+    printASBD(ASBD);
+}
+
+void printASBD(AudioStreamBasicDescription asbd) {
+    char formatIDString[5];
+    UInt32 formatID = CFSwapInt32HostToBig (asbd.mFormatID);
+    bcopy (&formatID, formatIDString, 4);
+    formatIDString[4] = '\0';
+ 
+    cout << "  Sample Rate:         " << asbd.mSampleRate << endl;
+    cout << "  Channels per Frame:  " << asbd.mChannelsPerFrame << endl;
+    cout << "  Bits per Channel:    " << asbd.mBitsPerChannel << endl;
+    cout << "  Format ID:           " << formatIDString << endl;
+    cout << "  Format Flags:        " << "0x" << hex <<asbd.mFormatFlags << dec << endl;
+    cout << "  Bytes per Packet:    " << asbd.mBytesPerPacket << endl;
+    cout << "  Frames per Packet:   " << asbd.mFramesPerPacket << endl;
+    cout << "  Bytes per Frame:     " << asbd.mBytesPerFrame << endl;
+}
