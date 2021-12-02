@@ -7,9 +7,10 @@
 #include "ofxAudioUnitFilePlayer.h"
 #include "ofxAudioUnitInput.h"
 #include "ofxAudioUnitMixer.h"
-#include "ofxAudioUnitOutput.h"
+#include "ofxAudioUnitRender.h"
 #include "ofxAudioUnitSampler.h"
 #include "lpAudioUnitSamplesOutput.hpp"
+#include "ofxAudioUnitOutput.h"
 
 #include "TargetConditionals.h"
 #if !TARGET_OS_IPHONE

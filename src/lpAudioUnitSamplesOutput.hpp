@@ -22,7 +22,7 @@ public:
     
     void* getOutputImpl();
     
-    void startProcess();
+    bool startProcess();
     void stopProcess();
     
     //private
@@ -32,8 +32,10 @@ public:
     void (*outputCallback)(void* impl, uint8_t *data, int sampleRate, int channels, int depth, int length);
     
 private:
-    
+    AUGraph         auGraph;
     AudioStreamBasicDescription outputASBD;
     void* outputImpl;
+    
+    bool outputIsRunning;
 };
 #endif /* lpAudioUnitSamplesOutput_hpp */

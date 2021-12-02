@@ -69,6 +69,16 @@ ofxAudioUnitInput::ofxAudioUnitInput(unsigned int samplesToBuffer)
 									 &ASBD_size),
 				"getting input ASBD");
 	
+    ASBD.mSampleRate = 48000;
+    ASBD.mChannelsPerFrame = 1;
+    OFXAU_PRINT(AudioUnitSetProperty(*_unit,
+                                     kAudioUnitProperty_StreamFormat,
+                                     kAudioUnitScope_Output,
+                                     1,
+                                     &ASBD,
+                                     sizeof(ASBD)),
+                "setting input sample rate to 48000");
+    
 	_impl->ctx.inputUnit  = _unit;
 	_impl->ctx.bufferList = AudioBufferListRef(AudioBufferListAlloc(ASBD.mChannelsPerFrame, 1024), AudioBufferListRelease);
 	_impl->ctx.circularBuffers.resize(ASBD.mChannelsPerFrame);
@@ -102,23 +112,40 @@ ofxAudioUnit& ofxAudioUnitInput::connectTo(ofxAudioUnit &otherUnit, int destinat
 {
 	AudioStreamBasicDescription ASBD;
 	UInt32 ASBDSize = sizeof(ASBD);
-	
-	OFXAU_PRINT(AudioUnitGetProperty(otherUnit,
-									 kAudioUnitProperty_StreamFormat,
-									 kAudioUnitScope_Input,
-									 destinationBus,
-									 &ASBD,
-									 &ASBDSize),
-				"getting hardware input destination's format");
-	
-	OFXAU_PRINT(AudioUnitSetProperty(*_unit,
-									 kAudioUnitProperty_StreamFormat,
-									 kAudioUnitScope_Output,
-									 1,
-									 &ASBD,
-									 sizeof(ASBD)),
-				"setting hardware input's output format");
-	
+//    printAudioUnitASBD(*_unit);
+//	OFXAU_PRINT(AudioUnitGetProperty(otherUnit,
+//									 kAudioUnitProperty_StreamFormat,
+//									 kAudioUnitScope_Input,
+//									 destinationBus,
+//									 &ASBD,
+//									 &ASBDSize),
+//				"getting hardware input destination's format");
+//
+//	OFXAU_PRINT(AudioUnitSetProperty(*_unit,
+//									 kAudioUnitProperty_StreamFormat,
+//									 kAudioUnitScope_Output,
+//									 1,
+//									 &ASBD,
+//									 sizeof(ASBD)),
+//				"setting hardware input's output format");
+    OFXAU_PRINT(AudioUnitGetProperty(*_unit,
+                                     kAudioUnitProperty_StreamFormat,
+                                     kAudioUnitScope_Output,
+                                     1,
+                                     &ASBD,
+                                     &ASBDSize),
+                "setting hardware input's output format");
+    
+    OFXAU_PRINT(AudioUnitSetProperty(otherUnit,
+                                     kAudioUnitProperty_StreamFormat,
+                                     kAudioUnitScope_Input,
+                                     destinationBus,
+                                     &ASBD,
+                                     sizeof(ASBD)),
+                "getting hardware input destination's format");
+    
+
+    
 	AURenderCallbackStruct callback = {PullCallback, &_impl->ctx};
 	otherUnit.setRenderCallback(callback, destinationBus);
 	return otherUnit;
@@ -241,7 +268,7 @@ bool ofxAudioUnitInput::configureInputDevice()
 	OFXAU_RET_FALSE(AudioUnitSetProperty(*_unit,
 										 kAudioOutputUnitProperty_CurrentDevice,
 										 kAudioUnitScope_Global,
-										 0,
+										 1,
 										 &_impl->inputDeviceID,
 										 deviceIDSize), 
 					"setting HAL unit's device ID");
@@ -256,7 +283,7 @@ bool ofxAudioUnitInput::configureInputDevice()
 										 &ASBDSize),
 					"getting hardware stream format");
 	
-	deviceASBD.mSampleRate = 44100;
+	deviceASBD.mSampleRate = 48000;
 	
 	OFXAU_RET_FALSE(AudioUnitSetProperty(*_unit,
 										 kAudioUnitProperty_StreamFormat,
@@ -271,7 +298,7 @@ bool ofxAudioUnitInput::configureInputDevice()
 	OFXAU_RET_FALSE(AudioUnitSetProperty(*_unit,
 										 kAudioOutputUnitProperty_SetInputCallback,
 										 kAudioUnitScope_Global,
-										 0,
+										 1,
 										 &inputCallback,
 										 sizeof(inputCallback)),
 					"setting hardware input callback");
@@ -317,7 +344,16 @@ OSStatus RenderCallback(void *inRefCon,
 // ----------------------------------------------------------
 {
 	InputContext * ctx = static_cast<InputContext *>(inRefCon);
-	
+//    AudioStreamBasicDescription ASBD = {0};
+//    UInt32 dataSize = sizeof(ASBD);
+//    OFXAU_RET_STATUS(AudioUnitGetProperty(*(ctx->inputUnit),
+//                                      kAudioUnitProperty_StreamFormat,
+//                                      kAudioUnitScope_Output,
+//                                      1,
+//                                      &ASBD,
+//                                      &dataSize), "kAudioUnitProperty_StreamFormat");
+//    printASBD(ASBD);
+    
 	OSStatus s = AudioUnitRender(*(ctx->inputUnit),
 								 ioActionFlags,
 								 inTimeStamp,

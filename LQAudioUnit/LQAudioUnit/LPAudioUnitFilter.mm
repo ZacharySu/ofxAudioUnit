@@ -14,12 +14,13 @@ static void audioCallback(void* impl, uint8_t *data, int sampleRate, int channel
     ofxAudioUnit compressor;
     ofxAudioUnit delay;
     ofxAudioUnit distortion;
-    ofxAudioUnit filter;
+    ofxAudioUnit lowPassFilter;
+    ofxAudioUnitInput capture;
     
     ofxAudioUnitFilePlayer source1, source2, source3;
     ofxAudioUnitMixer mixer;
+    ofxAudioUnitRender render;
     ofxAudioUnitOutput output;
-    
     
     lpAudioUnitSamplesOutput samplesOutput;
     //测试用
@@ -31,7 +32,16 @@ static void audioCallback(void* impl, uint8_t *data, int sampleRate, int channel
 @end
 
 @implementation LPAudioUnitFilter
-
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _sampleRate = 44100;
+        _channels = 2;
+        _bitDepth = 16;
+    }
+    return self;
+}
 + (NSString *)getFilePath:(NSString* )fileName {
     NSBundle *bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle].resourcePath stringByAppendingPathComponent:@"lovepea.bundle"]];
     NSString *filePath = [bundle pathForResource:fileName ofType:nil];
@@ -55,47 +65,49 @@ static void audioCallback(void* impl, uint8_t *data, int sampleRate, int channel
     
     distortion.setup(kAudioUnitType_Effect, kAudioUnitSubType_Distortion);
     delay.setup(kAudioUnitType_Effect, kAudioUnitSubType_Delay);
-    filter.setup(kAudioUnitType_Effect, kAudioUnitSubType_LowPassFilter);
+    lowPassFilter.setup(kAudioUnitType_Effect, kAudioUnitSubType_LowPassFilter);
     
     if(0){
-        source1.connectTo(distortion);
-        source2.connectTo(delay);
-        source3.connectTo(filter);
-        
-        mixer.setInputBusCount(3);
-        
-        distortion.connectTo(mixer, 0);
-        delay.connectTo(mixer, 1);
-        filter.connectTo(mixer, 2);
-        //    mixer.setOutputASBD(44100, 2, 16);
-        
-        //
+//        source1.connectTo(distortion);
+//        source2.connectTo(delay);
+//        source3.connectTo(lowPassFilter);
+//
+//        mixer.setInputBusCount(3);
+//
+//        distortion.connectTo(mixer, 0);
+//        delay.connectTo(mixer, 1);
+//        lowPassFilter.connectTo(mixer, 2);
     } else {
+        mixer.setInputBusCount(4);
         source1.connectTo(mixer, 0);
         source2.connectTo(mixer, 1);
         source3.connectTo(mixer, 2);
+        capture.connectTo(mixer, 3);
     }
     mixer.setInputVolume(0.05, 1);
     mixer.setInputVolume(0.05, 2);
     if(0){
-        mixer.connectTo(compressor);
-        compressor.setup(kAudioUnitType_Effect, kAudioUnitSubType_DynamicsProcessor);
-        ofxAudioUnitDSPNode dspNode;
-        compressor.connectTo(dspNode).connectTo(output);
-    } else if(1){
-//        samplesOutput.setup(kAudioUnitType_FormatConverter, kAudioUnitSubType_AUConverter);
         mixer.connectTo(samplesOutput);
-        samplesOutput.setOutputASBD(44100, 2, 32);
-        samplesOutput.connectTo(output);
-    } else {
-        compressor.setup(kAudioUnitType_Effect, kAudioUnitSubType_DynamicsProcessor);
-        mixer.connectTo(compressor);
-        compressor.connectTo(output);
+        samplesOutput.setOutputASBD(_sampleRate, _channels, _bitDepth);
+        ofxAudioUnitDSPNode dspNode;
+        samplesOutput.connectTo(dspNode).connectTo(render);
+        render.start();
+    } else if(1){
+        mixer.connectTo(samplesOutput);
+        samplesOutput.setOutputASBD(_sampleRate, _channels, _bitDepth);
+        //-------- VoiceProcessingIO
+        samplesOutput.startProcess();
+        
+        //-------- hardware device render
+//        samplesOutput.connectTo(render);
+//        render.start();
+        //------- GenericOutput
+//        samplesOutput.connectTo(output);
+//        output.start();
     }
 //    compressor.connectTo(output);
 //    mixer.setInputVolume(0.5, 2);
-     
-    output.start();
+    capture.start();
 
     source1.loop();
     source2.loop();
@@ -103,8 +115,8 @@ static void audioCallback(void* impl, uint8_t *data, int sampleRate, int channel
 }
 
 - (void)testStop {
-    output.stop();
-
+    render.stop();
+    samplesOutput.stopProcess();
     source1.stop();
     source2.stop();
     source3.stop();

@@ -11,16 +11,15 @@
 class ofxAudioUnitOutput : public ofxAudioUnit
 {
 public:
-	ofxAudioUnitOutput();
+    ofxAudioUnitOutput();
 	~ofxAudioUnitOutput(){stop();}
 	
 	bool start();
 	bool stop();
-	
-#if !TARGET_OS_IPHONE
-	bool setDevice(AudioDeviceID deviceID);
-	bool setDevice(const std::string &deviceName);
-
-	static void listOutputDevices();
-#endif
+private:
+    AUGraph         auGraph;
+    pthread_t renderTid;
+    bool outputIsRunning;
+    void* ctx;
+    static void* RenderingThread(void *arg);
 };

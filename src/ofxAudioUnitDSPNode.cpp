@@ -88,7 +88,7 @@ ofxAudioUnitDSPNode::ofxAudioUnitDSPNode(unsigned int samplesToBuffer)
 : _impl(new NodeImpl(samplesToBuffer, 2))
 // ----------------------------------------------------------
 {
-	
+    memset(&_impl->ctx.processCallback, 0, sizeof(AURenderCallbackStruct));
 }
 
 // ----------------------------------------------------------
@@ -249,8 +249,7 @@ OSStatus RenderAndCopy(void * inRefCon,
 	DSPNodeContext * ctx = static_cast<DSPNodeContext *>(inRefCon);
 	
 	OSStatus status;
-	
-	if(ctx->sourceType == NodeSourceUnit && ctx->sourceUnit->getUnitRef()) {
+	if(ctx->sourceType == NodeSourceUnit && ctx->sourceUnit->getUnit()) {
 		status = ctx->sourceUnit->render(ioActionFlags, inTimeStamp, ctx->sourceBus, inNumberFrames, ioData);
 	} else if(ctx->sourceType == NodeSourceCallback) {
 		status = (ctx->sourceCallback.inputProc)(ctx->sourceCallback.inputProcRefCon,
