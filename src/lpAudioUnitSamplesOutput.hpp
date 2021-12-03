@@ -19,23 +19,15 @@ public:
     
     void setOutputASBD(int sampleRate, int channels, int bitDepth);
     void setOutputCallback(void *impl, void (callback)(void* impl, uint8_t *data, int sampleRate, int channels, int depth, int length));
-    
-    void* getOutputImpl();
-    
+    void setOutputSize(unsigned int size);
     bool startProcess();
     void stopProcess();
     
-    //private
-    int outputSampleRate;
-    int outputChannels;
-    int outputBitDepth;
-    void (*outputCallback)(void* impl, uint8_t *data, int sampleRate, int channels, int depth, int length);
-    
 private:
+    struct PCMOutputImpl;
+    std::shared_ptr<PCMOutputImpl> _impl;
     AUGraph         auGraph;
     AudioStreamBasicDescription outputASBD;
-    void* outputImpl;
-    
     bool outputIsRunning;
 };
 #endif /* lpAudioUnitSamplesOutput_hpp */

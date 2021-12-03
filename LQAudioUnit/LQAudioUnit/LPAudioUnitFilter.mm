@@ -28,7 +28,8 @@ static void audioCallback(void* impl, uint8_t *data, int sampleRate, int channel
     BOOL loadpcm;
     FILE* pcmfile;
 }
-
+@property (nonatomic, weak) id<LPAudioUnitDelegate>delegate;
+@property (atomic, assign)  BOOL    isRunning;
 @end
 
 @implementation LPAudioUnitFilter
@@ -52,7 +53,7 @@ static void audioCallback(void* impl, uint8_t *data, int sampleRate, int channel
     return filePath;
 }
 - (void)testStart {
-    savepcm = YES;
+    savepcm = NO;
     if( savepcm ){
         pcmfile = fopen( "/System/Volumes/Data/Users/suzhou/Downloads/sample.pcm","wb");
     }else if(loadpcm){
@@ -67,51 +68,31 @@ static void audioCallback(void* impl, uint8_t *data, int sampleRate, int channel
     delay.setup(kAudioUnitType_Effect, kAudioUnitSubType_Delay);
     lowPassFilter.setup(kAudioUnitType_Effect, kAudioUnitSubType_LowPassFilter);
     
-    if(0){
-//        source1.connectTo(distortion);
-//        source2.connectTo(delay);
-//        source3.connectTo(lowPassFilter);
-//
-//        mixer.setInputBusCount(3);
-//
-//        distortion.connectTo(mixer, 0);
-//        delay.connectTo(mixer, 1);
-//        lowPassFilter.connectTo(mixer, 2);
-    } else {
-        mixer.setInputBusCount(4);
-        source1.connectTo(mixer, 0);
-        source2.connectTo(mixer, 1);
-        source3.connectTo(mixer, 2);
-        capture.connectTo(mixer, 3);
-    }
+    mixer.setInputBusCount(4);
+    source1.connectTo(mixer, 0);
+    source2.connectTo(mixer, 1);
+    source3.connectTo(mixer, 2);
+    capture.connectTo(mixer, 3);
+    mixer.setInputVolume(0.5 , 0);
     mixer.setInputVolume(0.05, 1);
     mixer.setInputVolume(0.05, 2);
-    if(0){
-        mixer.connectTo(samplesOutput);
-        samplesOutput.setOutputASBD(_sampleRate, _channels, _bitDepth);
-        ofxAudioUnitDSPNode dspNode;
-        samplesOutput.connectTo(dspNode).connectTo(render);
+    
+    mixer.connectTo(samplesOutput);
+    samplesOutput.setOutputASBD(_sampleRate, _channels, _bitDepth);
+    samplesOutput.setOutputSize(2048);
+    if(_enableEcho){//-------- hardware device render
+        samplesOutput.connectTo(render);
         render.start();
-    } else if(1){
-        mixer.connectTo(samplesOutput);
-        samplesOutput.setOutputASBD(_sampleRate, _channels, _bitDepth);
-        //-------- VoiceProcessingIO
+    } else { //-------- VoiceProcessingIO
         samplesOutput.startProcess();
-        
-        //-------- hardware device render
-//        samplesOutput.connectTo(render);
-//        render.start();
-        //------- GenericOutput
-//        samplesOutput.connectTo(output);
-//        output.start();
     }
-//    compressor.connectTo(output);
-//    mixer.setInputVolume(0.5, 2);
+
     capture.start();
 
     source1.loop();
     source2.loop();
     source3.loop();
+    _isRunning = YES;
 }
 
 - (void)testStop {
@@ -120,12 +101,16 @@ static void audioCallback(void* impl, uint8_t *data, int sampleRate, int channel
     source1.stop();
     source2.stop();
     source3.stop();
+    _isRunning = NO;
 }
 
-- (void)setDelegate:(id<LPAudioUnitDelegate>)delegate{
+- (void)setDelegate:(id<LPAudioUnitDelegate>)delegate pcmBytes:(int)pcmBytes{
+    NSAssert(!_isRunning, @"LPAudioUnitFilter set delegate in running");
     _delegate = delegate;
     samplesOutput.setOutputCallback((__bridge void*)self, &audioCallback);
+    samplesOutput.setOutputSize(pcmBytes);
 }
+
 void audioCallback(void* impl, uint8_t *data, int sampleRate, int channels, int depth, int length){
     __strong LPAudioUnitFilter *audioUnit = (__bridge LPAudioUnitFilter*)impl;
     if(audioUnit && audioUnit.delegate && [audioUnit.delegate respondsToSelector:@selector(audioRended:sampleRate:channels:depth:length:)]){
@@ -135,5 +120,9 @@ void audioCallback(void* impl, uint8_t *data, int sampleRate, int channels, int 
         fwrite( data, sizeof(uint8_t), length, audioUnit->pcmfile );
     }
 //    return NULL;
+}
+
+- (void)updateAudioPcmForIndex:(int)index data:(uint8_t *) data length:(int)length{
+    
 }
 @end

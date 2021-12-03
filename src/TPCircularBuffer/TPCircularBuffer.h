@@ -163,6 +163,9 @@ static __inline__ __attribute__((always_inline)) bool TPCircularBufferProduceByt
     return true;
 }
 
+uint32_t TPCircularBufferAddData(TPCircularBuffer* buffer_, void * buf_, uint32_t size_);
+uint32_t TPCircularBufferGetData(TPCircularBuffer* buffer_, void * buf_ , uint32_t size_);
+
 #ifdef __cplusplus
 }
 #endif

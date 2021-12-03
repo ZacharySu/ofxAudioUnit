@@ -113,3 +113,29 @@ void TPCircularBufferClear(TPCircularBuffer *buffer) {
         TPCircularBufferConsume(buffer, fillCount);
     }
 }
+
+uint32_t TPCircularBufferAddData(TPCircularBuffer* buffer_, void * buf_, uint32_t size_)
+{
+    int32_t availableBytes = 0;
+    TPCircularBufferHead(buffer_, &availableBytes);
+    if (availableBytes <= 0)
+          return 0;
+    
+    uint32_t len =  (availableBytes >= size_ ? size_ : availableBytes);
+    TPCircularBufferProduceBytes(buffer_, (void*)buf_, size_);
+    return len;
+}
+uint32_t TPCircularBufferGetData(TPCircularBuffer* buffer_, void * buf_ , uint32_t size_)
+{
+    int32_t availableBytes = 0;
+    void *bufferTail = TPCircularBufferTail(buffer_, &availableBytes);
+    if (availableBytes >= size_)
+    {
+        uint32_t len = 0;
+        len = (size_ > availableBytes ? availableBytes : size_);
+        memcpy(buf_, bufferTail, len);
+        TPCircularBufferConsume(buffer_, len);
+        return len;
+    }
+    return 0;
+}
