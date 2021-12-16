@@ -6,7 +6,7 @@
 // ofxAudioUnit subclasses for specific audio units
 #include "ofxAudioUnitFilePlayer.h"
 #include "ofxAudioUnitInput.h"
-#include "ofxAudioUnitMixer.h"
+#include "ofxAudioUnitRawMixer.h"
 #include "ofxAudioUnitRender.h"
 #include "ofxAudioUnitSampler.h"
 #include "lpAudioUnitSamplesOutput.hpp"

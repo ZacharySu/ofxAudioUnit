@@ -20,7 +20,6 @@ class ofxAudioUnitMixer : public ofxAudioUnit
 {
 public:
 	ofxAudioUnitMixer();
-    ofxAudioUnitMixer(int sampleRate, int channels, int bitDepth);
 	void setInputVolume (float volume, int bus = 0);
 	void setOutputVolume(float volume);
 	void setPan(float pan, int bus = 0);
@@ -36,12 +35,6 @@ public:
 	void  enableOutputMetering();
 	void  disableInputMetering(int bus = 0);
 	void  disableOutputMetering();
-    
-    //private
-    int outputSampleRate;
-    int outputChannels;
-    int outputBitDepth;
-    void (*outputCallback)(void* impl, uint8_t *data, int sampleRate, int channels, int depth, int length);
 private:
     AudioStreamBasicDescription outputASBD;
 };

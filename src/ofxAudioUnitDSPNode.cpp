@@ -240,7 +240,7 @@ inline void CopyAudioBufferIntoCircularBuffer(TPCircularBuffer * circBuffer, con
 
 // ----------------------------------------------------------
 OSStatus RenderAndCopy(void * inRefCon,
-					   AudioUnitRenderActionFlags * ioActionFlags,
+                AudioUnitRenderActionFlags * ioActionFlags,
 					   const AudioTimeStamp * inTimeStamp,
 					   UInt32 inBusNumber,
 					   UInt32 inNumberFrames,
@@ -249,7 +249,7 @@ OSStatus RenderAndCopy(void * inRefCon,
 	DSPNodeContext * ctx = static_cast<DSPNodeContext *>(inRefCon);
 	
 	OSStatus status;
-	if(ctx->sourceType == NodeSourceUnit && ctx->sourceUnit->getUnit()) {
+	if(ctx->sourceType == NodeSourceUnit && ctx->sourceUnit->getUnitRef()) {
 		status = ctx->sourceUnit->render(ioActionFlags, inTimeStamp, ctx->sourceBus, inNumberFrames, ioData);
 	} else if(ctx->sourceType == NodeSourceCallback) {
 		status = (ctx->sourceCallback.inputProc)(ctx->sourceCallback.inputProcRefCon,

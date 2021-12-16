@@ -134,7 +134,7 @@ ofxAudioUnit& ofxAudioUnitInput::connectTo(ofxAudioUnit &otherUnit, int destinat
                                      1,
                                      &ASBD,
                                      &ASBDSize),
-                "setting hardware input's output format");
+                "getting hardware input's output format");
     
     OFXAU_PRINT(AudioUnitSetProperty(otherUnit,
                                      kAudioUnitProperty_StreamFormat,
@@ -142,7 +142,7 @@ ofxAudioUnit& ofxAudioUnitInput::connectTo(ofxAudioUnit &otherUnit, int destinat
                                      destinationBus,
                                      &ASBD,
                                      sizeof(ASBD)),
-                "getting hardware input destination's format");
+                "setting hardware input destination's format");
     
 
     

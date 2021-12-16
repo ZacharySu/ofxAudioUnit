@@ -6,23 +6,25 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreAudio/CoreAudio.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol LPAudioUnitDelegate <NSObject>
--(void)audioRended:(uint8_t *) data sampleRate:(int)sampleRate channels:(int)channels depth:(int)depth length:(int)length;
+-(void)audioRenderd:(uint8_t *) data sampleRate:(int)sampleRate channels:(int)channels depth:(int)depth length:(int)length;
 @end
 
 @interface LPAudioUnitFilter : NSObject
-@property (nonatomic, assign)   int     sampleRate;
-@property (nonatomic, assign)   int     channels;
-@property (nonatomic, assign)   int     bitDepth;
 @property (nonatomic, assign)   BOOL    enableEcho;
 
-- (void)testStart;
-- (void)testStop;
-- (void)setDelegate:(id<LPAudioUnitDelegate>)delegate pcmBytes:(int)pcmBytes;
-- (void)updateAudioPcmForIndex:(int)index data:(uint8_t *) data length:(int)length;
+- (void)setDelegate:(id<LPAudioUnitDelegate>)delegate sampleRate:(int)sampleRate channels:(int)channels bitDepth:(int)depth pcmBytes:(int)pcmBytes;
+
+- (void)setMixInputBusCount:(uint8_t)busCount;
+
+- (void)startProcess;
+- (void)stopProcess;
+
+- (void)updateAudioPcmForIndex:(int)index data:(void *) data asbd:(AudioStreamBasicDescription) asbd length:(int)length;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -62,6 +62,8 @@
 		BF57EA9C274F839800987A8E /* LPAudioUnitFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF57EA9A274F839800987A8E /* LPAudioUnitFilter.mm */; };
 		BFB0C5E12757A48400E8E710 /* ofxAudioUnitOutput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFB0C5DF2757A48400E8E710 /* ofxAudioUnitOutput.cpp */; };
 		BFB0C5E22757A48400E8E710 /* ofxAudioUnitOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = BFB0C5E02757A48400E8E710 /* ofxAudioUnitOutput.h */; };
+		BFB0C624275A37D200E8E710 /* ofxAudioUnitRawMixer.h in Headers */ = {isa = PBXBuildFile; fileRef = BFB0C622275A37D200E8E710 /* ofxAudioUnitRawMixer.h */; };
+		BFB0C625275A37D200E8E710 /* ofxAudioUnitRawMixer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFB0C623275A37D200E8E710 /* ofxAudioUnitRawMixer.cpp */; };
 		BFB2BF312754D26900833605 /* lpAudioUnitSamplesOutput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFB2BF2F2754D26900833605 /* lpAudioUnitSamplesOutput.cpp */; };
 		BFB2BF322754D26900833605 /* lpAudioUnitSamplesOutput.hpp in Headers */ = {isa = PBXBuildFile; fileRef = BFB2BF302754D26900833605 /* lpAudioUnitSamplesOutput.hpp */; };
 /* End PBXBuildFile section */
@@ -127,6 +129,8 @@
 		BF57EA9A274F839800987A8E /* LPAudioUnitFilter.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LPAudioUnitFilter.mm; sourceTree = "<group>"; };
 		BFB0C5DF2757A48400E8E710 /* ofxAudioUnitOutput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxAudioUnitOutput.cpp; sourceTree = "<group>"; };
 		BFB0C5E02757A48400E8E710 /* ofxAudioUnitOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxAudioUnitOutput.h; sourceTree = "<group>"; };
+		BFB0C622275A37D200E8E710 /* ofxAudioUnitRawMixer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxAudioUnitRawMixer.h; sourceTree = "<group>"; };
+		BFB0C623275A37D200E8E710 /* ofxAudioUnitRawMixer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxAudioUnitRawMixer.cpp; sourceTree = "<group>"; };
 		BFB2BF2F2754D26900833605 /* lpAudioUnitSamplesOutput.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = lpAudioUnitSamplesOutput.cpp; sourceTree = "<group>"; };
 		BFB2BF302754D26900833605 /* lpAudioUnitSamplesOutput.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = lpAudioUnitSamplesOutput.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -208,6 +212,8 @@
 				BF57EA40274E37F700987A8E /* ofxAudioUnitMidi.h */,
 				BF57EA32274E37F700987A8E /* ofxAudioUnitMixer.cpp */,
 				BF57EA33274E37F700987A8E /* ofxAudioUnitMixer.h */,
+				BFB0C623275A37D200E8E710 /* ofxAudioUnitRawMixer.cpp */,
+				BFB0C622275A37D200E8E710 /* ofxAudioUnitRawMixer.h */,
 				BF57EA1B274E37F700987A8E /* ofxAudioUnitNetReceive.cpp */,
 				BF57EA35274E37F700987A8E /* ofxAudioUnitNetReceive.h */,
 				BF57EA26274E37F700987A8E /* ofxAudioUnitNetSend.cpp */,
@@ -297,6 +303,7 @@
 				BF57EA76274F660300987A8E /* ofTypes.h in Headers */,
 				BF57EA69274E37F700987A8E /* AUParamInfo.h in Headers */,
 				BF57EA6D274E37F700987A8E /* ofxAudioUnitMidi.h in Headers */,
+				BFB0C624275A37D200E8E710 /* ofxAudioUnitRawMixer.h in Headers */,
 				BF57EA47274E37F700987A8E /* ofxAudioUnitHardwareUtils.h in Headers */,
 				BF57EA55274E37F700987A8E /* ofxAudioUnitFilePlayer.h in Headers */,
 				BF57EA5D274E37F700987A8E /* ofxAudioUnitRecorder.h in Headers */,
@@ -402,6 +409,7 @@
 				BFB2BF312754D26900833605 /* lpAudioUnitSamplesOutput.cpp in Sources */,
 				BF57EA4F274E37F700987A8E /* ofxAudioUnitMatrixMixer.cpp in Sources */,
 				BF57EA5E274E37F700987A8E /* ofxAudioUnitHardwareUtils.cpp in Sources */,
+				BFB0C625275A37D200E8E710 /* ofxAudioUnitRawMixer.cpp in Sources */,
 				BF57EA60274E37F700987A8E /* ofxAudioUnitMixer.cpp in Sources */,
 				BF57EA6B274E37F700987A8E /* AUParamInfo.cpp in Sources */,
 				BF57EA64274E37F700987A8E /* ofxAudioUnitRecorder.cpp in Sources */,
