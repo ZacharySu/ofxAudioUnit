@@ -72,7 +72,7 @@ struct ofxAudioUnitRawMixer::RawMixerImpl{
 
 // ----------------------------------------------------------
 ofxAudioUnitRawMixer::ofxAudioUnitRawMixer()
-:_impl(new RawMixerImpl)
+:_impl(make_shared<RawMixerImpl>() )
 // ----------------------------------------------------------
 {
     

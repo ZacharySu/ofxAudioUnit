@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BF57EA10274E33A000987A8E /* LQAudioUnit.h in Headers */ = {isa = PBXBuildFile; fileRef = BF57EA0D274E33A000987A8E /* LQAudioUnit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BF57EA10274E33A000987A8E /* LPAudioUnit.h in Headers */ = {isa = PBXBuildFile; fileRef = BF57EA0D274E33A000987A8E /* LPAudioUnit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF57EA46274E37F700987A8E /* ofxAudioUnitDSPNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF57EA18274E37F700987A8E /* ofxAudioUnitDSPNode.h */; };
 		BF57EA47274E37F700987A8E /* ofxAudioUnitHardwareUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BF57EA19274E37F700987A8E /* ofxAudioUnitHardwareUtils.h */; };
 		BF57EA48274E37F700987A8E /* ofxAudioUnitDSPNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF57EA1A274E37F700987A8E /* ofxAudioUnitDSPNode.cpp */; };
@@ -69,8 +69,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		BF57EA0A274E33A000987A8E /* LQAudioUnit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LQAudioUnit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BF57EA0D274E33A000987A8E /* LQAudioUnit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LQAudioUnit.h; sourceTree = "<group>"; };
+		BF57EA0A274E33A000987A8E /* LPAudioUnit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LPAudioUnit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF57EA0D274E33A000987A8E /* LPAudioUnit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPAudioUnit.h; sourceTree = "<group>"; };
 		BF57EA18274E37F700987A8E /* ofxAudioUnitDSPNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxAudioUnitDSPNode.h; sourceTree = "<group>"; };
 		BF57EA19274E37F700987A8E /* ofxAudioUnitHardwareUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxAudioUnitHardwareUtils.h; sourceTree = "<group>"; };
 		BF57EA1A274E37F700987A8E /* ofxAudioUnitDSPNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxAudioUnitDSPNode.cpp; sourceTree = "<group>"; };
@@ -155,7 +155,7 @@
 		BF57EA00274E33A000987A8E = {
 			isa = PBXGroup;
 			children = (
-				BF57EA0C274E33A000987A8E /* LQAudioUnit */,
+				BF57EA0C274E33A000987A8E /* LPAudioUnit */,
 				BF57EA0B274E33A000987A8E /* Products */,
 				BF57EA77274F6EC700987A8E /* Frameworks */,
 			);
@@ -164,20 +164,20 @@
 		BF57EA0B274E33A000987A8E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BF57EA0A274E33A000987A8E /* LQAudioUnit.framework */,
+				BF57EA0A274E33A000987A8E /* LPAudioUnit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		BF57EA0C274E33A000987A8E /* LQAudioUnit */ = {
+		BF57EA0C274E33A000987A8E /* LPAudioUnit */ = {
 			isa = PBXGroup;
 			children = (
 				BF57EA16274E37D700987A8E /* ofxAudioUnit */,
-				BF57EA0D274E33A000987A8E /* LQAudioUnit.h */,
+				BF57EA0D274E33A000987A8E /* LPAudioUnit.h */,
 				BF57EA99274F839800987A8E /* LPAudioUnitFilter.h */,
 				BF57EA9A274F839800987A8E /* LPAudioUnitFilter.mm */,
 			);
-			path = LQAudioUnit;
+			path = LPAudioUnit;
 			sourceTree = "<group>";
 		};
 		BF57EA16274E37D700987A8E /* ofxAudioUnit */ = {
@@ -309,7 +309,7 @@
 				BF57EA5D274E37F700987A8E /* ofxAudioUnitRecorder.h in Headers */,
 				BF57EA63274E37F700987A8E /* ofxAudioUnitNetReceive.h in Headers */,
 				BF57EA5C274E37F700987A8E /* ofxAudioUnitMatrixMixer.h in Headers */,
-				BF57EA10274E33A000987A8E /* LQAudioUnit.h in Headers */,
+				BF57EA10274E33A000987A8E /* LPAudioUnit.h in Headers */,
 				BF57EA61274E37F700987A8E /* ofxAudioUnitMixer.h in Headers */,
 				BF57EA4A274E37F700987A8E /* ofxAudioUnitBase.h in Headers */,
 				BF57EA56274E37F700987A8E /* ofxAudioUnitNetSend.h in Headers */,
@@ -329,9 +329,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		BF57EA09274E33A000987A8E /* LQAudioUnit */ = {
+		BF57EA09274E33A000987A8E /* LPAudioUnit */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BF57EA13274E33A000987A8E /* Build configuration list for PBXNativeTarget "LQAudioUnit" */;
+			buildConfigurationList = BF57EA13274E33A000987A8E /* Build configuration list for PBXNativeTarget "LPAudioUnit" */;
 			buildPhases = (
 				BF57EA05274E33A000987A8E /* Headers */,
 				BF57EA06274E33A000987A8E /* Sources */,
@@ -342,9 +342,9 @@
 			);
 			dependencies = (
 			);
-			name = LQAudioUnit;
+			name = LPAudioUnit;
 			productName = LQAudioUnit;
-			productReference = BF57EA0A274E33A000987A8E /* LQAudioUnit.framework */;
+			productReference = BF57EA0A274E33A000987A8E /* LPAudioUnit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -361,7 +361,7 @@
 					};
 				};
 			};
-			buildConfigurationList = BF57EA04274E33A000987A8E /* Build configuration list for PBXProject "LQAudioUnit" */;
+			buildConfigurationList = BF57EA04274E33A000987A8E /* Build configuration list for PBXProject "LPAudioUnit" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -374,7 +374,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BF57EA09274E33A000987A8E /* LQAudioUnit */,
+				BF57EA09274E33A000987A8E /* LPAudioUnit */,
 			);
 		};
 /* End PBXProject section */
@@ -562,7 +562,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sina.LQAudioUnit;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sina.LPAudioUnit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -590,7 +590,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sina.LQAudioUnit;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sina.LPAudioUnit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -600,7 +600,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		BF57EA04274E33A000987A8E /* Build configuration list for PBXProject "LQAudioUnit" */ = {
+		BF57EA04274E33A000987A8E /* Build configuration list for PBXProject "LPAudioUnit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BF57EA11274E33A000987A8E /* Debug */,
@@ -609,7 +609,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BF57EA13274E33A000987A8E /* Build configuration list for PBXNativeTarget "LQAudioUnit" */ = {
+		BF57EA13274E33A000987A8E /* Build configuration list for PBXNativeTarget "LPAudioUnit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BF57EA14274E33A000987A8E /* Debug */,

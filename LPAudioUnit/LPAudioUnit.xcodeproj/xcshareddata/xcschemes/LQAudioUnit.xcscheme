@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BF57EA09274E33A000987A8E"
                BuildableName = "LQAudioUnit.framework"
-               BlueprintName = "LQAudioUnit"
+               BlueprintName = "LPAudioUnit"
                ReferencedContainer = "container:LQAudioUnit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -52,7 +52,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BF57EA09274E33A000987A8E"
             BuildableName = "LQAudioUnit.framework"
-            BlueprintName = "LQAudioUnit"
+            BlueprintName = "LPAudioUnit"
             ReferencedContainer = "container:LQAudioUnit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

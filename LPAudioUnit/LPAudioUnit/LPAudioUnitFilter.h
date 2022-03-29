@@ -1,6 +1,6 @@
 //
 //  LPAudioUnitFilter.h
-//  LQAudioUnit
+//  LPAudioUnit
 //
 //  Created by suzhou on 2021/11/25.
 //

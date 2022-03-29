@@ -57,7 +57,7 @@ AudioUnitRef ofxAudioUnit::allocUnit(AudioComponentDescription desc)
 	{
 		cout << "Couldn't locate component for description: " << StringForDescription(desc) << endl;
 		return AudioUnitRef();
-	}
+	} 
 	
 	ofPtr<AudioUnit> unit((AudioUnit *)malloc(sizeof(AudioUnit)), AudioUnitDeleter);
 	OFXAU_PRINT(AudioComponentInstanceNew(component, unit.get()), "creating new unit");

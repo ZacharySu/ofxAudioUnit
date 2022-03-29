@@ -59,7 +59,7 @@ bool ofxAudioUnitRender::setDevice(const std::string &deviceName)
 // ----------------------------------------------------------
 {
 	std::vector<AudioDeviceID> outputDevices = AudioOutputDeviceList();
-	AudioDeviceID deviceID;
+    AudioDeviceID deviceID{0};
 	bool found = false;
 	for(int i = 0; i < outputDevices.size(); i++) {
 		int diff = AudioDeviceName(outputDevices[i]).compare(deviceName);

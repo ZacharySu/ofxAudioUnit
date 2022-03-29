@@ -1,6 +1,6 @@
 //
 //  lpAudioUnitSamplesOutput.cpp
-//  LQAudioUnit
+//  LPAudioUnit
 //
 //  Created by suzhou on 2021/11/29.
 //
@@ -54,11 +54,10 @@ private:
 };
 struct lpAudioUnitSamplesOutput::PCMOutputImpl{
     PCMOutputContext ctx;
-
 };
 
 lpAudioUnitSamplesOutput::lpAudioUnitSamplesOutput()
-:_impl(new PCMOutputImpl)
+:_impl(std::make_shared<PCMOutputImpl>() )
 {
     setup(kAudioUnitType_FormatConverter, kAudioUnitSubType_AUConverter);
     outputIsRunning = false;
