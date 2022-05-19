@@ -218,4 +218,30 @@ bool ofxAudioUnitFftNode::getPhase(std::vector<float> &outPhase)
 	return true;
 }
 
+float ofxAudioUnitFftNode::getdBLevel(){
+    
+//}::getdBLevel:(float *)data numFrames:(UInt32)numFrames numChannels:(UInt32)numChannels {
+    getSamplesFromChannel(_sampleBuffer, 0);
+    
+    if(_sampleBuffer.size() < _N) {
+        return 0.0;
+    }
+    int size = _N*sizeof(float);
+    float* data = (float*)malloc(size);
+    memcpy(data, &_sampleBuffer[0], size);
+    vDSP_vsq(data, 1, data, 1, _N);
+     
+    float meanVal = 0.0;
+     
+    vDSP_meanv(data, 1, &meanVal, _N);
+     
+    float one = 1.0;
+     
+    vDSP_vdbcon(&meanVal, 1, &one, &meanVal, 1, 1, 0);
+     
+    float dBLevel = meanVal;
+    free(data);
+    return dBLevel;
+}
+
 #endif // !TARGET_OS_IPHONE

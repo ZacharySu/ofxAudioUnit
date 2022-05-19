@@ -42,7 +42,7 @@ public:
 	
 	bool getAmplitude(std::vector<float> &outAmplitude);
 	bool getPhase(std::vector<float> &outPhase);
-	
+    float getdBLevel();
 	// this should be set to a power of 2 (512, 1024, 2048, etc), and will be rounded up otherwise
 	void setFftBufferSize(unsigned int bufferSize);
 	
@@ -63,4 +63,5 @@ private:
 	float * _window;
 	std::vector<Float32> _sampleBuffer;
 	void freeBuffers();
+    float dBLevel = 0.0;
 };

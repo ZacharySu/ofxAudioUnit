@@ -192,7 +192,10 @@ void audioCallback(void* impl, uint8_t *data, int sampleRate, int channels, int 
     }
     mixer.updateAudioPcmBuffer(asbd, data, length, index + destinationBusOffset);
         if( savepcm && pcmfile != NULL  ){
-            fwrite( data, sizeof(uint8_t), length, pcmfile );
+            size_t sizeWriten = fwrite( data, sizeof(uint8_t), length, pcmfile );
+            if(sizeWriten <= 0){
+                printf("fail to write\n");
+            }
         }
 }
 @end

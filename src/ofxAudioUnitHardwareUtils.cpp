@@ -38,37 +38,57 @@ std::vector<AudioDeviceID> AudioDeviceList()
 		return std::vector<AudioDeviceID>();
 	}
 }
-
-std::vector<AudioDeviceID> AudioDeviceListForScope(AudioObjectPropertyScope scope)
-{
-	std::vector<AudioDeviceID> allDevices = AudioDeviceList();
-	std::vector<AudioDeviceID> validDevices;
-	
-	AudioObjectPropertyAddress outStreamProp = {
-		.mSelector = kAudioDevicePropertyStreamConfiguration,
-		.mScope    = scope,
-		.mElement  = kAudioObjectPropertyElementMaster
-	};
-	
-	for(int i = 0; i < allDevices.size(); i++) {
-		OSStatus s;
-		UInt32 dataSize;
-		s = AudioObjectGetPropertyDataSize(allDevices[i], &outStreamProp, 0, NULL, &dataSize);
-		if(s != noErr) continue;
-		
-		AudioBufferList * streamFormat = (AudioBufferList *)malloc(dataSize);
-		s = AudioObjectGetPropertyData(allDevices[i], &outStreamProp, 0, NULL, &dataSize, streamFormat);
-		
-		// an "input" device is one which reports having a buffer topology with > 0
-		// buffers on the input scope (and vice versa for output)
-		if(s == noErr && streamFormat->mNumberBuffers > 0) {
-			validDevices.push_back(allDevices[i]);
-		}
-		
-		free(streamFormat);
-	}
-	
-	return validDevices;
+std::vector<AudioDeviceID> AudioDeviceListForScope(AudioObjectPropertyScope scope, std::string uniqueID){
+    std::vector<AudioDeviceID> allDevices = AudioDeviceList();
+    std::vector<AudioDeviceID> validDevices;
+    
+    AudioObjectPropertyAddress outStreamProp = {
+        .mSelector = kAudioDevicePropertyStreamConfiguration,
+        .mScope    = scope,
+        .mElement  = kAudioObjectPropertyElementMaster
+    };
+    
+    for(int i = 0; i < allDevices.size(); i++) {
+        OSStatus s;
+        UInt32 dataSize;
+        s = AudioObjectGetPropertyDataSize(allDevices[i], &outStreamProp, 0, NULL, &dataSize);
+        if(s != noErr) continue;
+        
+        AudioBufferList * streamFormat = (AudioBufferList *)malloc(dataSize);
+        s = AudioObjectGetPropertyData(allDevices[i], &outStreamProp, 0, NULL, &dataSize, streamFormat);
+        
+        if(!uniqueID.empty()){
+            AudioObjectPropertyAddress propertyAddress = {
+                kAudioDevicePropertyDeviceUID,
+                scope,
+                kAudioObjectPropertyElementMaster
+            };
+            CFStringRef deviceUID = NULL;
+            dataSize = sizeof(deviceUID);
+            propertyAddress.mSelector = kAudioDevicePropertyDeviceUID;
+            s = AudioObjectGetPropertyData(allDevices[i], &propertyAddress, 0, NULL, &dataSize, &deviceUID);
+            if(s == noErr){
+                CFIndex bufferSize = CFStringGetMaximumSizeForEncoding(CFStringGetLength(deviceUID), kCFStringEncodingUTF8);
+                char chars[bufferSize+1];
+                memset(chars, 0, bufferSize);
+                if (CFStringGetCString (deviceUID, chars, bufferSize, kCFStringEncodingUTF8) && std::string(chars) == uniqueID){
+                    validDevices.push_back(allDevices[i]);
+                }
+            }
+        }
+        // an "input" device is one which reports having a buffer topology with > 0
+        // buffers on the input scope (and vice versa for output)
+        else if(s == noErr && streamFormat->mNumberBuffers > 0) {
+            validDevices.push_back(allDevices[i]);
+        }
+        
+        free(streamFormat);
+    }
+    
+    return validDevices;
+}
+std::vector<AudioDeviceID> AudioDeviceListForScope(AudioObjectPropertyScope scope){
+    return AudioDeviceListForScope(scope, "");
 }
 
 std::vector<AudioDeviceID> AudioOutputDeviceList()
@@ -157,4 +177,26 @@ std::string AudioDeviceManufacturer(AudioDeviceID deviceID)
 	return StringForPropertyOnDevice(deviceManuProp, deviceID);
 }
 
+std::string AudioDeviceIdentify(AudioDeviceID deviceID)
+{
+    AudioObjectPropertyAddress deviceManuProp = {
+        .mSelector = kAudioObjectPropertyElementName,
+        .mScope    = kAudioObjectPropertyScopeGlobal,
+        .mElement  = kAudioObjectPropertyElementMaster
+    };
+    
+    return StringForPropertyOnDevice(deviceManuProp, deviceID);
+}
+
+AudioDeviceID GetAudioDeviceID(std::string uniqueID){
+    AudioDeviceID target = 0;
+    std::vector<AudioDeviceID> audioDeviceList = AudioDeviceListForScope(kAudioDevicePropertyScopeInput, uniqueID);//AudioInputDeviceList();//
+    if(!audioDeviceList.empty()){
+        target = *audioDeviceList.begin();
+        for(auto device : audioDeviceList){
+            std::cout << "ID:[" << device << "] \t" << "Name[" << AudioDeviceName(device) << "] \tUID:[" << uniqueID  << "]" << std::endl;
+        }
+    }
+    return target;
+}
 #endif

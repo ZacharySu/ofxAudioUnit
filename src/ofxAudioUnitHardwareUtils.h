@@ -18,4 +18,5 @@ AudioDeviceID DefaultAudioOutputDevice();
 std::string AudioDeviceName(AudioDeviceID deviceID);
 std::string AudioDeviceManufacturer(AudioDeviceID deviceID);
 
+AudioDeviceID GetAudioDeviceID(std::string uniqueID);
 #endif // !TARGET_OS_IPHONE

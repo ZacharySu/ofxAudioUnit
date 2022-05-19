@@ -20,6 +20,11 @@ ofxAudioUnitRender::ofxAudioUnitRender()
 {
 	_desc = renderDesc;
 	initUnit();
+    AudioStreamBasicDescription outputASBD;
+    UInt32 size = sizeof(outputASBD);
+    // set output stream format and callback for mixer
+    AudioUnitGetProperty(*_unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 0, &outputASBD, &size);
+//    printASBD(outputASBD);
 }
 
 // ----------------------------------------------------------
