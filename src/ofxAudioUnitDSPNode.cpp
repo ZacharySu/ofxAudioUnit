@@ -111,7 +111,7 @@ ofxAudioUnit& ofxAudioUnitDSPNode::connectTo(ofxAudioUnit &destination, int dest
 	   (_impl->ctx.sourceType == NodeSourceUnit     && !_impl->ctx.sourceUnit) ||
 	   (_impl->ctx.sourceType == NodeSourceCallback && !_impl->ctx.sourceCallback.inputProc))
 	{
-		std::cout << "Tap can't be connected without a source" << std::endl;
+        FLog("Tap can't be connected without a source");
 		AURenderCallbackStruct silentCallback = {SilentRenderCallback};
 		destination.setRenderCallback(silentCallback);
 		return destination;

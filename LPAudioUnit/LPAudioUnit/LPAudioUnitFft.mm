@@ -11,7 +11,7 @@
 
 #define FOR_DEBUG 0
 @interface LPAudioUnitFft(){
-    ofxAudioUnitInput   audioCaputure;
+    ofxAudioUnitCapture   audioCaputure;
     ofxAudioUnitRender render;
     ofxAudioUnitFftNode fftNode;
     ofxAudioUnitRawMixer mixer;

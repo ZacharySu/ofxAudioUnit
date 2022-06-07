@@ -55,7 +55,7 @@ AudioUnitRef ofxAudioUnit::allocUnit(AudioComponentDescription desc)
 	AudioComponent component = AudioComponentFindNext(NULL, &_desc);
 	if(!component)
 	{
-		cout << "Couldn't locate component for description: " << StringForDescription(desc) << endl;
+        FLog("Couldn't locate component for description: %s", StringForDescription(desc).c_str());
 		return AudioUnitRef();
 	} 
 	
@@ -147,7 +147,7 @@ void ofxAudioUnit::printParameterList(bool includeExpert, bool includeReadOnly)
 {
 	vector<AudioUnitParameterInfo> paramList = getParameterList(includeExpert, includeReadOnly);
 	
-	cout << "\n[id] param name [min : max : default]" << endl;
+    DLog("\n[id] param name [min : max : default]");
 	
 	for(size_t i = 0; i < paramList.size(); ++i) {
 		AudioUnitParameterInfo& p = paramList[i];
@@ -157,15 +157,13 @@ void ofxAudioUnit::printParameterList(bool includeExpert, bool includeReadOnly)
 		CFStringGetCString(p.cfNameString, buffer, bufferSize, kCFStringEncodingUTF8);
 		string paramName(buffer);
 		
-		cout << "[" << i << "] " << paramName << " [";
-		cout << p.minValue << " : " << p.maxValue << " : " << p.defaultValue << "]" << endl;
+        DLog("[%d] %s [%f:%f:%f]", i, paramName.c_str(), p.minValue, p.maxValue, p.defaultValue);
 		
 		if(p.flags & kAudioUnitParameterFlag_CFNameRelease) {
 			CFRelease(p.cfNameString);
 		}
 	}
 	
-	cout << endl;
 }
 
 #endif // !TARGET_OS_IPHONE
@@ -303,7 +301,7 @@ bool ofxAudioUnit::loadPreset(const CFURLRef &presetURL)
 	}
 	else 
 	{
-		cout << "Couldn't read preset at " << StringForPathFromURL(presetURL) << endl;
+        DLog("Couldn't read preset at %s", StringForPathFromURL(presetURL).c_str());
 	}
 	
 	bool presetSetSuccess = presetReadSuccess && (presetSetStatus == noErr);
@@ -358,8 +356,7 @@ bool ofxAudioUnit::savePreset(const CFURLRef &presetURL)
 //
 //	if(!writeSuccess)
 //	{
-//		cout << "Error " << errorCode << " writing preset file at "
-//		<< StringForPathFromURL(presetURL) << endl;
+//		FLog("Error %d writing preset file at %s", errorCode,  StringForPathFromURL(presetURL).c_str());
 //	}
 //
 //	return writeSuccess;
@@ -423,9 +420,12 @@ void ofxAudioUnit::setRenderCallback(AURenderCallbackStruct callback, int bus)
 }
 
 // ----------------------------------------------------------
-void ofxAudioUnit::printAudioUnitASBD(AudioUnit unit) {
+void ofxAudioUnit::printAudioUnitASBD(AudioUnit unit, bool isInput, uint32_t inElement) {
     AudioStreamBasicDescription ASBD = {0};
-    
+    AudioUnitScope            inScope = kAudioUnitScope_Output;
+    if(isInput){
+        inScope = kAudioUnitScope_Input;
+    }
     if(unit){
         UInt32 dataSize = sizeof(ASBD);
         OSStatus s = AudioUnitGetProperty(unit,
@@ -438,6 +438,7 @@ void ofxAudioUnit::printAudioUnitASBD(AudioUnit unit) {
             ASBD = (AudioStreamBasicDescription){0};
         }
     }
+    FLog("ASBD for  %s's %d %s",typeid(*this).name() , inElement, inScope ? "input" : "output");
     printASBD(ASBD);
 }
 
@@ -446,13 +447,14 @@ void printASBD(AudioStreamBasicDescription asbd) {
     UInt32 formatID = CFSwapInt32HostToBig (asbd.mFormatID);
     bcopy (&formatID, formatIDString, 4);
     formatIDString[4] = '\0';
- 
-    cout << "  Sample Rate:         " << asbd.mSampleRate << endl;
-    cout << "  Channels per Frame:  " << asbd.mChannelsPerFrame << endl;
-    cout << "  Bits per Channel:    " << asbd.mBitsPerChannel << endl;
-    cout << "  Format ID:           " << formatIDString << endl;
-    cout << "  Format Flags:        " << "0x" << hex <<asbd.mFormatFlags << dec << endl;
-    cout << "  Bytes per Packet:    " << asbd.mBytesPerPacket << endl;
-    cout << "  Frames per Packet:   " << asbd.mFramesPerPacket << endl;
-    cout << "  Bytes per Frame:     " << asbd.mBytesPerFrame << endl;
+    
+    FLog("  Sample Rate:         %f", asbd.mSampleRate);
+    FLog("  Channels per Frame:  %u", asbd.mChannelsPerFrame);
+    FLog("  Bits per Channel:    %u", asbd.mBitsPerChannel);
+    FLog("  Format ID:           %s", formatIDString );
+    FLog("  Format Flags:        0x%x", asbd.mFormatFlags);
+    FLog("  Bytes per Packet:    %u", asbd.mBytesPerPacket);
+    FLog("  Frames per Packet:   %u", asbd.mFramesPerPacket);
+    FLog("  Bytes per Frame:     %u", asbd.mBytesPerFrame);
+    FLog("  Reserved:            %u", asbd.mReserved);
 }

@@ -5,13 +5,13 @@
 
 // ofxAudioUnit subclasses for specific audio units
 #include "ofxAudioUnitFilePlayer.h"
-#include "ofxAudioUnitInput.h"
+#include "ofxAudioUnitCapture.h"
 #include "ofxAudioUnitRawMixer.h"
 #include "ofxAudioUnitRender.h"
 #include "ofxAudioUnitSampler.h"
 #include "lpAudioUnitSamplesOutput.hpp"
 #include "ofxAudioUnitOutput.h"
-
+#include "ofxAudioUnitRawInput.h"
 #include "TargetConditionals.h"
 #if !TARGET_OS_IPHONE
 	#include "ofxAudioUnitNetReceive.h"

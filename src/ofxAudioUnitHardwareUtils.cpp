@@ -1,8 +1,9 @@
-#include "TargetConditionals.h"
+#include <TargetConditionals.h>
 #if !TARGET_OS_IPHONE
 
 #include "ofxAudioUnitHardwareUtils.h"
 #include "ofxAudioUnitUtils.h"
+#include "ofxAudioUnitBase.h"
 
 #pragma mark - Device List
 
@@ -194,7 +195,7 @@ AudioDeviceID GetAudioDeviceID(std::string uniqueID){
     if(!audioDeviceList.empty()){
         target = *audioDeviceList.begin();
         for(auto device : audioDeviceList){
-            std::cout << "ID:[" << device << "] \t" << "Name[" << AudioDeviceName(device) << "] \tUID:[" << uniqueID  << "]" << std::endl;
+            FLog("ID:[%d] \tName[%s] \tUID:[%s]", device, AudioDeviceName(device).c_str(), uniqueID.c_str());
         }
     }
     return target;

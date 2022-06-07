@@ -56,7 +56,7 @@ void ofxAudioUnitSpeechSynth::printAvailableVoices()
 	std::vector<std::string> voiceNames = getAvailableVoices();
 	for(int i = 0; i < voiceNames.size(); i++)
 	{
-		std::cout << i+1 << ":\t" << voiceNames.at(i) << std::endl;
+        FLog("%d:\t%s", i+1, voiceNames.at(i).c_str());
 	}
 }
 

@@ -7,6 +7,7 @@
 
 #import "LPAudioUnitFilter.h"
 #import "ofxAudioUnit.h"
+#include <unordered_map>
 
 #define FOR_DEBUG 0
 static void audioCallback(void* impl, uint8_t *data, int sampleRate, int channels, int depth, int length);
@@ -17,19 +18,23 @@ static void audioCallback(void* impl, uint8_t *data, int sampleRate, int channel
     ofxAudioUnit delay;
     ofxAudioUnit distortion;
     ofxAudioUnit lowPassFilter;
-    ofxAudioUnitInput capture;
+    ofxAudioUnitCapture capture;
     
     ofxAudioUnitFilePlayer source1, source2, source3;
     
 #endif
     uint8_t destinationBusOffset;
-    ofxAudioUnitRawMixer mixer;
+//    ofxAudioUnitRawInput rawInput;
+//    ofxAudioUnitRawMixer mixer;
+    ofxAudioUnitMixer mixer;
     lpAudioUnitSamplesOutput samplesOutput;
     ofxAudioUnitRender *render;
     //测试用
     BOOL savepcm;
     BOOL loadpcm;
     FILE* pcmfile;
+    std::unordered_map<int, std::shared_ptr<ofxAudioUnitRawInput>> rawInputs;
+    std::mutex              _mutex;
 }
 @property (nonatomic, weak) id<LPAudioUnitDelegate>delegate;
 
@@ -50,6 +55,8 @@ static void audioCallback(void* impl, uint8_t *data, int sampleRate, int channel
         _bitDepth = 16;
         render = NULL;
         destinationBusOffset =  FOR_DEBUG ? 3 : 0;
+        rawInputs.emplace(0, std::make_shared<ofxAudioUnitRawInput>());
+        
     }
     return self;
 }
@@ -137,14 +144,17 @@ static void audioCallback(void* impl, uint8_t *data, int sampleRate, int channel
 #if FOR_DEBUG
     [self testStart];
 #else
-    mixer.connectTo(samplesOutput);
+    auto input = rawInputs.find(0);
+    assert(input != rawInputs.end());
+    input->second->connectTo(mixer);
     if(_enableEcho){//-------- hardware device render
         if(!render){
             render = new ofxAudioUnitRender;
         }
-        samplesOutput.connectTo(*render);
+        mixer.connectTo(*render);
         render->start();
     } else { //-------- VoiceProcessingIO
+        mixer.connectTo(samplesOutput);
         samplesOutput.startProcess();
     }
     _isRunning = YES;
@@ -186,16 +196,47 @@ void audioCallback(void* impl, uint8_t *data, int sampleRate, int channels, int 
 //    }
 //    return NULL;
 }
+static void tdav_codec_int16_to_float (void *pInput, void* pOutput, uint8_t* pu1SampleSz, uint32_t* pu4TotalSz, bool bInt16)
+{
+    int16_t i2SampleNumTotal = *pu4TotalSz / *pu1SampleSz;
+    float *pf4Buf = (float *)pOutput;
+    if (!pInput || !pOutput) {
+        return;
+    }
+    
+    if ( bInt16 && *pu1SampleSz == 2) {
+        int16_t* pi2Buf = (int16_t*)pInput;
+        for (int i = 0; i < i2SampleNumTotal; i++) {
+            short sample = pi2Buf[i];
+            pf4Buf[i] =    (float)sample / 32768 ;  // int16 -> float
+        }
+        *pu4TotalSz *= 2;     // transfer to int16 byte size
+        *pu1SampleSz *= 2;
+    }
+    if (!bInt16 && *pu1SampleSz == 4) {     //如果是float，直接拷贝
+        memcpy (pOutput, pInput, *pu4TotalSz);
+    }
+    return;
+}
 - (void)updateAudioPcmForIndex:(int)index data:(void *) data asbd:(AudioStreamBasicDescription) asbd length:(int)length{
     if(!_isRunning){
         return;
     }
-    mixer.updateAudioPcmBuffer(asbd, data, length, index + destinationBusOffset);
-        if( savepcm && pcmfile != NULL  ){
-            size_t sizeWriten = fwrite( data, sizeof(uint8_t), length, pcmfile );
-            if(sizeWriten <= 0){
-                printf("fail to write\n");
-            }
+    std::lock_guard<std::mutex> lck(_mutex);
+    auto input = rawInputs.find(index);
+    if(input == rawInputs.end()){
+        rawInputs.emplace(index, std::make_shared<ofxAudioUnitRawInput>());
+        input = rawInputs.find(index);
+        input->second->connectTo(mixer, index);
+    }
+    assert(input != rawInputs.end());
+    input->second->updateAudioPcmBuffer(asbd, data, length);
+//    mixer.updateAudioPcmBuffer(asbd, data, length, index + destinationBusOffset);
+    if( savepcm && pcmfile != NULL  ){
+        size_t sizeWriten = fwrite( data, sizeof(uint8_t), length, pcmfile );
+        if(sizeWriten <= 0){
+            printf("fail to write\n");
         }
+    }
 }
 @end

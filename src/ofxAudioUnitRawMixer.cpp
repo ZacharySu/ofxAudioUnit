@@ -48,7 +48,7 @@ struct RawMixerConext{
             if(destinationBus < circularBuffers.size()){
                 TPCircularBufferClear(&circularBuffers[destinationBus]);
             }
-            cout << "ASBD " << destinationBus << " change" << endl;
+            FLog("ASBD %u change", destinationBus);
             bufferMutex.unlock();
             return true;
         }
@@ -72,7 +72,7 @@ struct ofxAudioUnitRawMixer::RawMixerImpl{
 
 // ----------------------------------------------------------
 ofxAudioUnitRawMixer::ofxAudioUnitRawMixer()
-:_impl(make_shared<RawMixerImpl>() )
+:_impl(make_shared<RawMixerImpl>())
 // ----------------------------------------------------------
 {
     
@@ -90,18 +90,22 @@ bool ofxAudioUnitRawMixer::setInputBusCount(unsigned int numberOfInputBusses, un
     return true;
 }
 void ofxAudioUnitRawMixer::setInputStreamFormat(AudioStreamBasicDescription ASBD, uint32_t destinationBus){
+    printAudioUnitASBD(*_unit, true, destinationBus);
+    printASBD(ASBD);
+    std::string errorMsg = "setting rawmixer input ASBD destination [" + std::to_string(destinationBus) +"] format ";
     OFXAU_RETURN(AudioUnitSetProperty(*_unit,
                                  kAudioUnitProperty_StreamFormat,
                                  kAudioUnitScope_Input,
                                  destinationBus,
                                  &ASBD,
                                  sizeof(ASBD)),
-            "setting hardware input destination's format");
+                 errorMsg.c_str());
     AURenderCallbackStruct callback = {RenderAndCopy, &_impl->ctx};
     setRenderCallback(callback, destinationBus);
 }
 void ofxAudioUnitRawMixer::setInputStreamFormat(int sampleRate, int channels, int bitDepth, uint32_t destinationBus)
 {
+    std::string errorMsg = "setting rawmixer input destination [" + std::to_string(destinationBus) +"] format";
     AudioStreamBasicDescription ASBD;
     UInt32 ASBDSize = sizeof(ASBD);
     OFXAU_RETURN(AudioUnitGetProperty(*_unit,
@@ -110,7 +114,7 @@ void ofxAudioUnitRawMixer::setInputStreamFormat(int sampleRate, int channels, in
                                      destinationBus,
                                      &ASBD,
                                      &ASBDSize),
-                "getting hardware input's output format");
+                "getting rawmixer input's output format");
     ASBD.mFormatID            = kAudioFormatLinearPCM;
     ASBD.mFormatFlags        =  kAudioFormatFlagIsSignedInteger |kAudioFormatFlagIsPacked|kAudioFormatFlagIsNonInterleaved;
     ASBD.mSampleRate = sampleRate;
@@ -120,12 +124,12 @@ void ofxAudioUnitRawMixer::setInputStreamFormat(int sampleRate, int channels, in
     ASBD.mBytesPerFrame = ASBD.mBitsPerChannel*ASBD.mChannelsPerFrame/8;//每帧的bytes数
     ASBD.mBytesPerPacket = ASBD.mBytesPerFrame*ASBD.mFramesPerPacket;
     OFXAU_RETURN(AudioUnitSetProperty(*_unit,
-                                 kAudioUnitProperty_StreamFormat,
-                                 kAudioUnitScope_Input,
-                                 destinationBus,
-                                 &ASBD,
-                                 sizeof(ASBD)),
-            "setting hardware input destination's format");
+                                      kAudioUnitProperty_StreamFormat,
+                                      kAudioUnitScope_Input,
+                                      destinationBus,
+                                      &ASBD,
+                                      sizeof(ASBD)),
+                 errorMsg.c_str());
     AURenderCallbackStruct callback = {RenderAndCopy, &_impl->ctx};
     setRenderCallback(callback, destinationBus);
 }
@@ -140,7 +144,9 @@ void ofxAudioUnitRawMixer::updateAudioPcmBuffer(void *data, int byteSize, uint32
             
             if(availableBytesInCircBuffer < byteSize) {
                 TPCircularBufferConsume(&_impl->ctx.circularBuffers[destinationBus], byteSize - availableBytesInCircBuffer);
-                cout << "音频数据[" << destinationBus << "]超出，将删除：" << (byteSize - availableBytesInCircBuffer) << endl;
+                if(0 == statisticCount++%200){
+                    FLog("音频数据[%d]超出，将删除：%d", destinationBus, (byteSize - availableBytesInCircBuffer));
+                }
             }
             
             TPCircularBufferProduceBytes(&_impl->ctx.circularBuffers[destinationBus], data, byteSize);
@@ -156,6 +162,8 @@ void ofxAudioUnitRawMixer::updateAudioPcmBuffer(AudioStreamBasicDescription ASBD
     }
     updateAudioPcmBuffer(data, byteSize, destinationBus);
 }
+
+static uint64_t debugStatisticCount = 1000;
 OSStatus RenderAndCopy(void * inRefCon,
                        AudioUnitRenderActionFlags * ioActionFlags,
                        const AudioTimeStamp * inTimeStamp,
@@ -164,7 +172,6 @@ OSStatus RenderAndCopy(void * inRefCon,
                        AudioBufferList * ioData)
 {
     OSStatus status = noErr;
-//    cout << "render for input bus:" << inBusNumber << endl;
     RawMixerConext * ctx = static_cast<RawMixerConext *>(inRefCon);
 
     if(ctx->bufferMutex.try_lock()) {
@@ -180,12 +187,15 @@ OSStatus RenderAndCopy(void * inRefCon,
         if(sizeInNeed > 0 && availableBytes >= sizeInNeed){
             for(int i = 0; i < ioData->mNumberBuffers; i++){
                 int bufferToConsume = TPCircularBufferGetData(&ctx->circularBuffers[inBusNumber], ioData->mBuffers[i].mData, ioData->mBuffers[i].mDataByteSize);
-//                cout << inBusNumber << "消费了音频数据：" << bufferToConsume << endl;
+                debugStatisticCount++;
+                if(0 == debugStatisticCount % 1000){
+                    FLog("%d消费了音频数据：%d",inBusNumber, bufferToConsume);
+                }
             }
         } else {
             for(int i = 0; i < ioData->mNumberBuffers; i++){
                 memset(ioData->mBuffers[i].mData, 0, ioData->mBuffers[i].mDataByteSize);
-//                cout << "音频数据不够(" << inBusNumber << ")" << endl;
+//                F Log("音频数据不够(%d)", inBusNumber);
             }
         }
         ctx->bufferMutex.unlock();

@@ -1,5 +1,6 @@
 #include "ofxAudioUnitRecorder.h"
 #include "ofxAudioUnitUtils.h"
+#include "ofxAudioUnitBase.h"
 
 // a render callback records audio passing through it
 static OSStatus Record(void * inRefCon,
@@ -31,8 +32,8 @@ bool ofxAudioUnitRecorder::startRecording(const std::string &filePath) {
 	AudioStreamBasicDescription inASBD = getSourceASBD();
 	
 	if(inASBD.mFormatID == 0) {
-		std::cout << "Recorder couldn't determine proper stream format. ";
-		std::cout << "Is the recorder directly after an Audio Unit?" << std::endl;
+        FLog("Recorder couldn't determine proper stream format. ");
+		FLog("Is the recorder directly after an Audio Unit?");
 		return false;
 	}
 	
@@ -95,7 +96,7 @@ bool ofxAudioUnitRecorder::startRecording(const std::string &filePath) {
 	CFRelease(fileURL);
 	
 	if(s != noErr) {
-		std::cout << "Couldn't create audio file: "<<filePath<<" err code: " << (OSStatus)s << std::endl;
+		FLog("Couldn't create audio file: %s err code: %d", filePath.c_str(), (OSStatus)s);
 		return false;
 	}
 	
@@ -106,7 +107,7 @@ bool ofxAudioUnitRecorder::startRecording(const std::string &filePath) {
 	
 	
 	if(s != noErr) {
-		std::cout << "Couldn't set client format: " << (OSStatus)s << std::endl;
+        FLog("Couldn't set client format: %d", (OSStatus)s);
 		return false;
 	}
 	
@@ -135,7 +136,7 @@ OSStatus Record(void * inRefCon,
 	OSStatus s = ExtAudioFileWriteAsync(file, inNumberFrames, ioData);
 	
 	if(s != noErr) {
-		std::cout << "error while recording audio: " << (OSStatus)s << std::endl;
+        FLog("error while recording audio: %d", (OSStatus)s);
 	}
 	
 	return noErr;

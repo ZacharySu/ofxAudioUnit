@@ -201,7 +201,7 @@ OSStatus RenderAndCopy(void * inRefCon,
                        UInt32 inNumberFrames,
                        AudioBufferList * ioData)
 {
-    OSStatus status;
+    OSStatus status = 0;
     
     if ((*ioActionFlags & kAudioUnitRenderAction_PostRender) && inBusNumber == 0)
     {

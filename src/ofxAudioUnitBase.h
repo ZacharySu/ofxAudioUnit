@@ -67,7 +67,7 @@ public:
 	void setParameter(AudioUnitParameterID property, AudioUnitScope scope, AudioUnitParameterValue value, int bus = 0);
 	void reset(){AudioUnitReset(*_unit, kAudioUnitScope_Global, 0);}
 	
-    void printAudioUnitASBD(AudioUnit unit);
+    void printAudioUnitASBD(AudioUnit unit, bool isInput, uint32_t inElement = 0);
 #if !(TARGET_OS_IPHONE)
 	
 	// Retrieves a list of all parameters the unit is advertising (helpful for 3rd party units)
@@ -92,3 +92,7 @@ protected:
 	static void AudioUnitDeleter(AudioUnit * unit);
 };
 void printASBD(AudioStreamBasicDescription asbd);
+
+
+extern "C" void FLog( const char* fmt, ...);
+extern "C" void DLog( const char* fmt, ...);

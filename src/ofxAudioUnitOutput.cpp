@@ -98,7 +98,6 @@ void* ofxAudioUnitOutput::RenderingThread(void *arg){
                                      0,
                                      512,
                                      ctx->bufferList.get()), "audio unit output redner error");
-        cout << "2" << endl;
     }
     return nullptr;
 }

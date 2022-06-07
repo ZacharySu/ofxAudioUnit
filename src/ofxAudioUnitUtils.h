@@ -41,31 +41,31 @@ static std::string StringForDescription(const AudioComponentDescription &desc)
 // these macros make the "do core audio thing, check for error" process less repetitive
 #define OFXAU_PRINT(s, stage)\
 if(s!=noErr){\
-	std::cout << "LPAudioUnit Error " << (OSStatus)s << " while " << stage << std::endl;\
+	FLog("LPAudioUnit Error %d while %s",(OSStatus)s, stage);\
 }
 
 #define OFXAU_RETURN(s, stage)\
 if(s!=noErr){\
-	std::cout << "LPAudioUnit Error " << (OSStatus)s << " while " << stage << std::endl;\
+    FLog("LPAudioUnit Error %d while %s",(OSStatus)s, stage);\
 	return;\
 }
 
 #define OFXAU_RET_BOOL(s, stage)\
 if(s!=noErr){\
-	std::cout << "LPAudioUnit Error " << (OSStatus)s << " while " << stage << std::endl;\
+    FLog("LPAudioUnit Error %d while %s",(OSStatus)s, stage);\
 	return false;\
 }\
 return true;
 
 #define OFXAU_RET_FALSE(s, stage)\
 if(s!=noErr){\
-	std::cout << "LPAudioUnit Error " << (OSStatus)s << " while " << stage << std::endl;\
+    FLog("LPAudioUnit Error %d while %s",(OSStatus)s, stage);\
 	return false;\
 }
 
 #define OFXAU_RET_STATUS(s, stage)\
 OSStatus stat = s;\
 if(stat!=noErr){\
-	std::cout << "LPAudioUnit Error " << (OSStatus)s << " while " << stage << std::endl;\
-	return stat;\
+    FLog("LPAudioUnit Error %d while %s",(OSStatus)s, stage);\
+    return stat;\
 }

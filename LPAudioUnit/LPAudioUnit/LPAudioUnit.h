@@ -18,3 +18,6 @@ FOUNDATION_EXPORT const unsigned char LPAudioUnitVersionString[];
 #import "LPAudioUnitFilter.h"
 #import "LPAudioUnitFft.h"
 
+@interface LPAudioUnit: NSObject
++ (void)setLogWriterBlock:(void(^)(NSString* log)) block;
+@end

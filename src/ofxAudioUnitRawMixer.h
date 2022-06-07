@@ -16,6 +16,7 @@ public:
     void updateAudioPcmBuffer(void *data, int byteSize, uint32_t destinationBus);
     void updateAudioPcmBuffer(AudioStreamBasicDescription ASBD, void *data, int byteSize, uint32_t destinationBus);
 private:
-    struct RawMixerImpl;
+    uint64_t statisticCount = 200;
+    struct  RawMixerImpl;
     std::shared_ptr<RawMixerImpl> _impl;
 };

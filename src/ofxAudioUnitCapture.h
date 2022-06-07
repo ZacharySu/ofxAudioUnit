@@ -2,11 +2,11 @@
 
 #include "ofxAudioUnitBase.h"
 
-class ofxAudioUnitInput : public ofxAudioUnit
+class ofxAudioUnitCapture : public ofxAudioUnit
 {
 public:
-	ofxAudioUnitInput(unsigned int samplesToBuffer = 2048);
-	~ofxAudioUnitInput();
+	ofxAudioUnitCapture(unsigned int samplesToBuffer = 2048);
+	~ofxAudioUnitCapture();
 	
 	ofxAudioUnit& connectTo(ofxAudioUnit &otherUnit, int destinationBus = 0, int sourceBus = 0);
 	using ofxAudioUnit::connectTo; // for connectTo(ofxAudioUnitTap&)

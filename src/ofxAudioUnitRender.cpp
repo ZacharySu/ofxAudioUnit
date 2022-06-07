@@ -31,6 +31,7 @@ ofxAudioUnitRender::ofxAudioUnitRender()
 bool ofxAudioUnitRender::start()
 // ----------------------------------------------------------
 {
+    printAudioUnitASBD(*_unit, false);
 	OFXAU_RET_BOOL(AudioOutputUnitStart(*_unit), "starting output unit");
 }
 
@@ -89,7 +90,7 @@ void ofxAudioUnitRender::listOutputDevices()
 	std::vector<AudioDeviceID> deviceList = AudioOutputDeviceList();
 	
 	for(int i = 0; i < deviceList.size(); i++) {
-		std::cout << "ID[" << deviceList[i] << "]  \t" << "Name[" << AudioDeviceName(deviceList[i]) << "]\n";
+		FLog("ID[%d]  \tName[%s]", deviceList[i], AudioDeviceName(deviceList[i]).c_str());
 	}
 }
 

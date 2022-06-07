@@ -198,7 +198,7 @@ void ofxAudioUnitSampler::setVolume(float volume)
                           volume,
                           0);
 #else
-	std::cout << "ofxAudioUnitSampler::setVolume() isn't implemented on iOS" << std::endl;
+	FLog("ofxAudioUnitSampler::setVolume() isn't implemented on iOS");
 #endif
 }
 

@@ -38,7 +38,7 @@ struct InputContext
 	AudioBufferListRef bufferList;
 };
 
-struct ofxAudioUnitInput::InputImpl
+struct ofxAudioUnitCapture::InputImpl
 {
 	InputContext ctx;
 	bool isReady;
@@ -49,10 +49,10 @@ struct ofxAudioUnitInput::InputImpl
 	
 };
 
-#pragma mark - ofxAudioUnitInput
+#pragma mark - ofxAudioUnitCapture
 
 // ----------------------------------------------------------
-ofxAudioUnitInput::ofxAudioUnitInput(unsigned int samplesToBuffer)
+ofxAudioUnitCapture::ofxAudioUnitCapture(unsigned int samplesToBuffer)
 : _impl(new InputImpl)
 // ----------------------------------------------------------
 {
@@ -94,7 +94,7 @@ ofxAudioUnitInput::ofxAudioUnitInput(unsigned int samplesToBuffer)
 }
 
 // ----------------------------------------------------------
-ofxAudioUnitInput::~ofxAudioUnitInput()
+ofxAudioUnitCapture::~ofxAudioUnitCapture()
 // ----------------------------------------------------------
 {
 	stop();
@@ -107,7 +107,7 @@ ofxAudioUnitInput::~ofxAudioUnitInput()
 #pragma mark - Connections
 
 // ----------------------------------------------------------
-ofxAudioUnit& ofxAudioUnitInput::connectTo(ofxAudioUnit &otherUnit, int destinationBus, int sourceBus)
+ofxAudioUnit& ofxAudioUnitCapture::connectTo(ofxAudioUnit &otherUnit, int destinationBus, int sourceBus)
 // ----------------------------------------------------------
 {
 	AudioStreamBasicDescription ASBD;
@@ -144,15 +144,13 @@ ofxAudioUnit& ofxAudioUnitInput::connectTo(ofxAudioUnit &otherUnit, int destinat
                                      sizeof(ASBD)),
                 "setting hardware input destination's format");
     
-
-    
 	AURenderCallbackStruct callback = {PullCallback, &_impl->ctx};
 	otherUnit.setRenderCallback(callback, destinationBus);
 	return otherUnit;
 }
 
 // ----------------------------------------------------------
-UInt32 ofxAudioUnitInput::getNumOutputChannels() const
+UInt32 ofxAudioUnitCapture::getNumOutputChannels() const
 // ----------------------------------------------------------
 {
 	return _impl->ctx.circularBuffers.size();
@@ -161,7 +159,7 @@ UInt32 ofxAudioUnitInput::getNumOutputChannels() const
 #pragma mark - Start / Stop
 
 // ----------------------------------------------------------
-bool ofxAudioUnitInput::start()
+bool ofxAudioUnitCapture::start()
 // ----------------------------------------------------------
 {
 	if(!_impl->isReady) _impl->isReady = configureInputDevice();
@@ -171,7 +169,7 @@ bool ofxAudioUnitInput::start()
 }
 
 // ----------------------------------------------------------
-bool ofxAudioUnitInput::stop()
+bool ofxAudioUnitCapture::stop()
 // ----------------------------------------------------------
 {
 	if(_unit) {
@@ -186,7 +184,7 @@ bool ofxAudioUnitInput::stop()
 #if !TARGET_OS_IPHONE
 
 // ----------------------------------------------------------
-bool ofxAudioUnitInput::setDevice(AudioDeviceID deviceID)
+bool ofxAudioUnitCapture::setDevice(AudioDeviceID deviceID)
 // ----------------------------------------------------------
 {
 	_impl->inputDeviceID = deviceID;
@@ -207,7 +205,7 @@ bool ofxAudioUnitInput::setDevice(AudioDeviceID deviceID)
 }
 
 // ----------------------------------------------------------
-bool ofxAudioUnitInput::setDevice(const std::string &deviceName)
+bool ofxAudioUnitCapture::setDevice(const std::string &deviceName)
 // ----------------------------------------------------------
 {
 	std::vector<AudioDeviceID> inputDevices = AudioInputDeviceList();
@@ -230,20 +228,20 @@ bool ofxAudioUnitInput::setDevice(const std::string &deviceName)
 }
 
 // ----------------------------------------------------------
-void ofxAudioUnitInput::listInputDevices()
+void ofxAudioUnitCapture::listInputDevices()
 // ----------------------------------------------------------
 {
 	std::vector<AudioDeviceID> deviceList = AudioInputDeviceList();
 	
 	for(int i = 0; i < deviceList.size(); i++) {
-		std::cout << "ID[" << deviceList[i] << "]  \t" << "Name[" << AudioDeviceName(deviceList[i]) << "]" << std::endl;
+        FLog("ID[%d]  \tName[%s]", deviceList[i], AudioDeviceName(deviceList[i]).c_str());
 	}
 }
 
 #pragma mark OSX
 
 // ----------------------------------------------------------
-bool ofxAudioUnitInput::configureInputDevice()
+bool ofxAudioUnitCapture::configureInputDevice()
 // ----------------------------------------------------------
 {
 	UInt32 on  = 1;
@@ -312,10 +310,10 @@ bool ofxAudioUnitInput::configureInputDevice()
 #pragma mark iOS
 
 // ----------------------------------------------------------
-bool ofxAudioUnitInput::configureInputDevice()
+bool ofxAudioUnitCapture::configureInputDevice()
 // ----------------------------------------------------------
 {
-	std::cout << "ofxAudioUnitInput not implemented on iOS yet" << std::endl;
+	FLog("ofxAudioUnitCapture not implemented on iOS yet");
 	return false;
 }
 
@@ -324,7 +322,7 @@ bool ofxAudioUnitInput::configureInputDevice()
 #pragma mark - Callbacks / Rendering
 
 // ----------------------------------------------------------
-OSStatus ofxAudioUnitInput::render(AudioUnitRenderActionFlags *flags,
+OSStatus ofxAudioUnitCapture::render(AudioUnitRenderActionFlags *flags,
 								   const AudioTimeStamp *timestamp,
 								   UInt32 bus,
 								   UInt32 frames,

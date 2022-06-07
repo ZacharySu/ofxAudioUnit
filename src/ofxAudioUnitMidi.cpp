@@ -28,7 +28,7 @@ void ofxAudioUnitMidi::printSourceNames()
 	std::vector<std::string> midiSources = ofxAudioUnitMidi::getSourceNames();
 	for(int i = 0; i < midiSources.size(); i++)
 	{
-		std::cout << i << " : " << midiSources[i] << std::endl;
+        FLog("%d : %s", i, midiSources[i].c_str());
 	}
 }
 
